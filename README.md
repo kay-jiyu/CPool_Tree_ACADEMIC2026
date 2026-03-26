@@ -1,3 +1,5 @@
+
+
 # CPool_Tree_2026
 
 ## 🎄 Sapin de Noël ASCII - Projet B-CPE-100
@@ -6,67 +8,91 @@ Repository contenant l'implémentation du **sapin ASCII redimensionnable** pour 
 
 ## Fonctionnalités
 
-- ✅ Sapin parfaitement centré
-- ✅ Gestion taille = 0 (rien affiché)
-- ✅ Utilisation EXCLUSIVE de `my_putchar`
-- ✅ Seule syscall `write()` autorisée
-- ✅ Code modulaire et testable
+- ✅ **Sapin parfaitement centré** : Calcul dynamique de la largeur maximale.
+- ✅ **Gestion `taille = 0`** : Aucune sortie sur le terminal.
+- ✅ **Utilisation EXCLUSIVE** de `my_putchar`.
+- ✅ **Seule syscall `write()`** autorisée (via `my_putchar`).
+- ✅ **Code modulaire** : Fonctions courtes et spécialisées.
 
+---
 
-Architecture du code
+## Architecture du code
 
-tree.c
-├── afficher_etoiles()     → Affiche les * de la couronne
-├── afficher_troncs()      → Affiche les | du tronc
-├── afficher_espaces()     → Centrage du sapin
-├── afficher_couche_sapin()→ Une ligne complète de couronne
-├── afficher_tronc_sapin() → Tronc complet (2 lignes)
-└── tree()                → Fonction principale
+Le fichier `tree.c` est découpé selon une logique de responsabilité unique :
 
-Algorithme du sapin
+* **`print_chars(int n, char c)`** : Affiche `n` fois le caractère `c`.
+* **`get_max_width(int size)`** : Calcule la largeur de la dernière ligne (essentiel pour le centrage).
+* **`draw_trunk(int size, int max_width)`** : Gère l'affichage du tronc centré.
+* **`tree(int size)`** : Orchestre les étages et les sauts de ligne.
 
-1. Calculer largeurTronc = taille/2 + 1
-2. POUR i de 0 à taille-1:
-     afficher_couche(taille + 2*i, largeurTronc)
-3. afficher_tronc(largeurTronc, 2)
+---
 
-Largeur couche i = taille + 2×i
-Centrage = (largeurTronc - largeurCouche) ÷ 2
-Compilation
-bash
+## Algorithme du sapin
 
-cc -Wall -Wextra main.c my_putchar.c tree.c -o sapin
+Le sapin suit une progression géométrique précise :
+1.  **Nombre de lignes par étage** : $étage + 3$.
+2.  **Largeur du tronc** : `size` si impair, `size + 1` si pair.
+3.  **Réduction entre étages** : Un retrait d'étoiles est appliqué à chaque nouveau palier pour créer la forme de sapin.
+
+### Formules clés :
+* **Largeur Tronc** : `(size % 2 == 0) ? size + 1 : size`
+* **Centrage** : `(largeurMax - largeurActuelle) / 2`
+
+---
+
+## Compilation & Usage
+
+Pour compiler le projet avec les flags de sécurité standard :
+
+```bash
+gcc -Wall -Wextra main.c my_putchar.c tree.c -o sapin
+```
+
+Pour exécuter le programme :
+```bash
 ./sapin 5
+```
 
-Tests automatisés (local)
-bash
+---
 
+## Tests automatisés (Local)
+
+Tu peux utiliser ce script shell pour vérifier rapidement le rendu de plusieurs tailles :
+
+```bash
 #!/bin/bash
 # tests.sh
 
-for taille in 0 1 3 5 7; do
-    echo "Test taille $taille:"
+for taille in 0 1 3 5; do
+    echo "--- Test taille $taille ---"
     ./sapin $taille
-    echo "---"
+    echo -e "\n"
 done
+```
 
-Conformité 100%
-Contraintes	Statut
-Fichier unique tree.c	✅
-Pas de main()	✅
-Seulement my_putchar	✅
-Pas de fichiers inutiles	✅
-Fonctions à responsabilité unique	✅
-Style de code EPITECH	✅
-Dépôt Git
+---
 
+## Conformité 100%
+
+| Contraintes | Statut |
+| :--- | :--- |
+| Fichier unique `tree.c` | ✅ |
+| Pas de `main()` dans le rendu final | ✅ |
+| Seulement `my_putchar` | ✅ |
+| Pas de fichiers inutiles (binaires, etc.) | ✅ |
+| Fonctions à responsabilité unique | ✅ |
+| Style de code (Coding Style) | ✅ |
+
+---
+
+## Structure du Dépôt
+
+```text
 CPool_Tree_2026/
-├── tree.c      # SEUL fichier à livrer
-├── README.md   # Documentation
-└── .gitignore  # Ignore binaires/obj
+├── tree.c      # SEUL fichier à livrer pour le ramassage
+├── README.md   # Cette documentation
+└── .gitignore  # Exclusion des fichiers temporaires
+```
 
-.gitignore:
-*.o
-a.out
-sapin
-*~
+---
+
